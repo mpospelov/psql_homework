@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+EXEC SQL BEGIN DECLARE SECTION; 
+char ConnectionString [] = "tbd@127.0.0.1:5432";
+char Login [] = "postgres";
+char Password [] = "";
+EXEC SQL END DECLARE SECTION;
+
+void db_connect(){
+  EXEC SQL CONNECT TO :ConnectionString  USER :Login using :Password;
+
+  if( sqlca.sqlcode != 0 || strncmp(sqlca.sqlstate,"00",2))
+  {
+    printf("connect -- NoOK\n");
+    exit(-1);
+  }
+  else
+  {
+    printf("connect --OK\n");	
+  }	
+}
+
+void db_disconnect(){
+  exec sql disconnect;
+  printf("disconnect --OK\n");
+}
