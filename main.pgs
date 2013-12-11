@@ -8,6 +8,13 @@ char Login [] = "postgres";
 char Password [] = "";
 EXEC SQL END DECLARE SECTION;
 
+//для взаимодействия с БД
+EXEC SQL BEGIN DECLARE SECTION;
+int my_id;
+char my_data[256];
+int my_count;
+EXEC SQL END DECLARE SECTION;	
+
 void db_connect(){
   EXEC SQL CONNECT TO :ConnectionString  USER :Login using :Password;
 
@@ -26,3 +33,30 @@ void db_disconnect(){
   exec sql disconnect;
   printf("disconnect --OK\n");
 }
+
+int orm_read_all_records(char *str)
+{
+  
+  EXEC SQL DECLARE MyCursor CURSOR FOR
+    SELECT id,COALESCE(name,'') FROM exTab ORDER BY id;
+  EXEC SQL OPEN MyCursor;
+  while(1)
+  {
+    EXEC SQL FETCH MyCursor INTO :my_id, :my_data;
+
+    if (sqlca.sqlcode == ECPG_NOT_FOUND || strncmp(sqlca.sqlstate,"00",2)) break;		
+
+    for(int i=0; i< 256; i++, str++){
+      if (my_data[i] == 0){
+       str += 256 - i;
+       break;
+      }
+      *str = my_data[i];
+    }
+      
+  }
+  EXEC SQL CLOSE MyCursor;
+  EXEC SQL COMMIT;
+  return 0;
+}
+

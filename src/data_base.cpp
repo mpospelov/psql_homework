@@ -1,4 +1,4 @@
-#include "headers/ecpg.h"
+#include "../headers/ecpg.h"
 class DataBase{
   public:
     static void Connect(){

@@ -1,4 +1,5 @@
 #include <iostream>
+#include "orm.cpp"
 using namespace std;
 
 class CommandLine{
@@ -30,9 +31,8 @@ class CommandLine{
     static void Show(){
       printf("_____________________\n");
       printf("1. show\n");
-      ReadAllRecord();
-      printf("_____________________\n");
-      break;
+      cout << ORM::ReadAllRecords();
+      printf("\n_____________________\n");
     }
     static void SelectValues(){}
     static void UpdateValues(){}
