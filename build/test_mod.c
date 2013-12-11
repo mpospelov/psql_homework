@@ -68,7 +68,7 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
-int orm_read_all_records(char *str)
+int orm_read_all_records(int *ids, char *str)
 {
   
   /* declare MyCursor cursor for select id , coalesce ( name , '' ) from exTab order by id */
@@ -88,21 +88,18 @@ int orm_read_all_records(char *str)
 
 
     if (sqlca.sqlcode == ECPG_NOT_FOUND || strncmp(sqlca.sqlstate,"00",2)) break;		
+    
+    *ids = my_id;
+    ids++;
 
-    for(int i=0; i< 256; i++, str++){
-      if (my_data[i] == 0){
-       str += 256 - i;
-       break;
-      }
+    for(int i=0; i< 256; i++, str++)
       *str = my_data[i];
-    }
-      
   }
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close MyCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 58 "main.pgs"
+#line 55 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 59 "main.pgs"
+#line 56 "main.pgs"
 
   return 0;
 }

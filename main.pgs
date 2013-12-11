@@ -34,7 +34,7 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
-int orm_read_all_records(char *str)
+int orm_read_all_records(int *ids, char *str)
 {
   
   EXEC SQL DECLARE MyCursor CURSOR FOR
@@ -45,15 +45,12 @@ int orm_read_all_records(char *str)
     EXEC SQL FETCH MyCursor INTO :my_id, :my_data;
 
     if (sqlca.sqlcode == ECPG_NOT_FOUND || strncmp(sqlca.sqlstate,"00",2)) break;		
+    
+    *ids = my_id;
+    ids++;
 
-    for(int i=0; i< 256; i++, str++){
-      if (my_data[i] == 0){
-       str += 256 - i;
-       break;
-      }
+    for(int i=0; i< 256; i++, str++)
       *str = my_data[i];
-    }
-      
   }
   EXEC SQL CLOSE MyCursor;
   EXEC SQL COMMIT;

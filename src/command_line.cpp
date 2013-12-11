@@ -6,9 +6,12 @@ class CommandLine{
   public:
 
     static void Start(){
-      ShowMenu();
       while(1){
+        ShowMenu();
         ExecCommand();
+        printf("Hit any key to continue> ");
+        getchar();
+        getchar();        
       }
     }
 
@@ -31,7 +34,7 @@ class CommandLine{
     static void Show(){
       printf("_____________________\n");
       printf("1. show\n");
-      cout << ORM::ReadAllRecords();
+      cout << *ORM::ReadAllRecords();
       printf("\n_____________________\n");
     }
     static void SelectValues(){}
