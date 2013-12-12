@@ -8,11 +8,19 @@ char Login [] = "postgres";
 char Password [] = "";
 EXEC SQL END DECLARE SECTION;
 
+
 //для взаимодействия с БД
 EXEC SQL BEGIN DECLARE SECTION;
+typedef struct
+{
+  int id;
+  char name[256];
+} dbinfo_t;
+
 int my_id;
 char my_data[256];
 int my_count;
+dbinfo_t dbval;
 EXEC SQL END DECLARE SECTION;	
 
 void db_connect(){
@@ -34,23 +42,18 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
-int orm_read_all_records(int *ids, char *str)
+int orm_read_all_records(dbinfo_t *result)
 {
-  
+  memset(&dbval, 0, sizeof(dbinfo_t));
   EXEC SQL DECLARE MyCursor CURSOR FOR
     SELECT id,COALESCE(name,'') FROM exTab ORDER BY id;
   EXEC SQL OPEN MyCursor;
+  EXEC SQL WHENEVER NOT FOUND DO BREAK;  
   while(1)
   {
-    EXEC SQL FETCH MyCursor INTO :my_id, :my_data;
-
-    if (sqlca.sqlcode == ECPG_NOT_FOUND || strncmp(sqlca.sqlstate,"00",2)) break;		
-    
-    *ids = my_id;
-    ids++;
-
-    for(int i=0; i< 256; i++, str++)
-      *str = my_data[i];
+    EXEC SQL FETCH MyCursor INTO :dbval;
+    *result = dbval;
+    result++;
   }
   EXEC SQL CLOSE MyCursor;
   EXEC SQL COMMIT;

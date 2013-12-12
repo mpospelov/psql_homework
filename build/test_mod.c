@@ -27,27 +27,47 @@
 #line 9 "main.pgs"
 
 
+
 //для взаимодействия с БД
 /* exec sql begin declare section */
+   
+  
+     
+     
+   typedef struct { 
+#line 16 "main.pgs"
+ int id ;
+ 
+#line 17 "main.pgs"
+ char name [ 256 ] ;
+ }  dbinfo_t ;
+
+#line 18 "main.pgs"
+
+
+ 
  
  
  
 
-#line 13 "main.pgs"
+#line 20 "main.pgs"
  int my_id ;
  
-#line 14 "main.pgs"
+#line 21 "main.pgs"
  char my_data [ 256 ] ;
  
-#line 15 "main.pgs"
+#line 22 "main.pgs"
  int my_count ;
+ 
+#line 23 "main.pgs"
+ dbinfo_t dbval ;
 /* exec sql end declare section */
-#line 16 "main.pgs"
+#line 24 "main.pgs"
 	
 
 void db_connect(){
   { ECPGconnect(__LINE__, 0, ConnectionString , Login , Password , NULL, 0); }
-#line 19 "main.pgs"
+#line 27 "main.pgs"
 
 
   if( sqlca.sqlcode != 0 || strncmp(sqlca.sqlstate,"00",2))
@@ -63,43 +83,44 @@ void db_connect(){
 
 void db_disconnect(){
   { ECPGdisconnect(__LINE__, "CURRENT");}
-#line 33 "main.pgs"
+#line 41 "main.pgs"
 
   printf("disconnect --OK\n");
 }
 
-int orm_read_all_records(int *ids, char *str)
+int orm_read_all_records(dbinfo_t *result)
 {
-  
+  memset(&dbval, 0, sizeof(dbinfo_t));
   /* declare MyCursor cursor for select id , coalesce ( name , '' ) from exTab order by id */
-#line 41 "main.pgs"
+#line 49 "main.pgs"
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare MyCursor cursor for select id , coalesce ( name , '' ) from exTab order by id", ECPGt_EOIT, ECPGt_EORT);}
-#line 42 "main.pgs"
+#line 50 "main.pgs"
 
+  /* exec sql whenever not found  break ; */
+#line 51 "main.pgs"
+  
   while(1)
   {
     { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch MyCursor", ECPGt_EOIT, 
-	ECPGt_int,&(my_id),(long)1,(long)1,sizeof(int), 
+	ECPGt_int,&(dbval.id),(long)1,(long)1,sizeof(int), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,(my_data),(long)256,(long)1,(256)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);}
-#line 45 "main.pgs"
+	ECPGt_char,&(dbval.name),(long)256,(long)1,(256)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
+#line 54 "main.pgs"
 
+if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
+#line 54 "main.pgs"
 
-    if (sqlca.sqlcode == ECPG_NOT_FOUND || strncmp(sqlca.sqlstate,"00",2)) break;		
-    
-    *ids = my_id;
-    ids++;
-
-    for(int i=0; i< 256; i++, str++)
-      *str = my_data[i];
+    *result = dbval;
+    printf("C res: %d %s", dbval.id, dbval.name);
+    result++;
   }
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close MyCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 55 "main.pgs"
+#line 59 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 56 "main.pgs"
+#line 60 "main.pgs"
 
   return 0;
 }
