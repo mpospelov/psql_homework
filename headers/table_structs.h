@@ -4,6 +4,7 @@
 
 const int string_size = 256;
 const int text_size = 1024;
+const int default_records_count = 256;
 const char * TABLES[] = {"achivements", "achivements_teachers",
   "authorships","confereces_teachers","conferences","disciplines",
   "disciplines_teachers", "publications", "scientific_managements", "teachers"};
@@ -60,7 +61,7 @@ typedef struct{
   char theme[string_size];
   char place[string_size];
   char type[string_size];
-}conferece;
+}conference;
 
 typedef struct{
   char teacher_name[string_size];

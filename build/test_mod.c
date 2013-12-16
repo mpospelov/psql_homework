@@ -201,7 +201,7 @@ typedef struct {
  
 #line 82 "main.pgs"
  char type [ string_size ] ;
- }  conferece ;
+ }  conference ;
 
 #line 83 "main.pgs"
 
@@ -264,7 +264,7 @@ typedef struct {
  conferences_teachers sql_conferences_teachers ;
  
 #line 85 "main.pgs"
- conferece sql_conferece ;
+ conference sql_conference ;
  
 #line 92 "main.pgs"
  disciplines_teachers sql_disciplines_teachers ;
@@ -298,37 +298,38 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
+
 int orm_read_all_records(char *table_name, void *result){
 
   /* exec sql begin declare section */
      
      
   
-#line 126 "main.pgs"
+#line 127 "main.pgs"
  teacher dbval ;
  
-#line 127 "main.pgs"
+#line 128 "main.pgs"
  char stmt [ string_size ] ;
 /* exec sql end declare section */
-#line 128 "main.pgs"
+#line 129 "main.pgs"
 	
   sprintf(stmt, "SELECT * FROM %s", table_name);
   memset(&dbval, 0, sizeof(teacher));
 
   { ECPGprepare(__LINE__, NULL, 0, "sqlstmt", stmt);}
-#line 132 "main.pgs"
+#line 133 "main.pgs"
 
   /* declare MyCursor cursor for $1 */
-#line 133 "main.pgs"
+#line 134 "main.pgs"
 
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare MyCursor cursor for $1", 
 	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
-#line 135 "main.pgs"
+#line 136 "main.pgs"
 
   /* exec sql whenever not found  break ; */
-#line 136 "main.pgs"
+#line 137 "main.pgs"
   
 
   while(1)
@@ -340,20 +341,20 @@ int orm_read_all_records(char *table_name, void *result){
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_char,&(dbval.post),(long)string_size,(long)1,(string_size)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 140 "main.pgs"
+#line 141 "main.pgs"
 
 if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
-#line 140 "main.pgs"
+#line 141 "main.pgs"
 
     *((teacher *) result) = dbval;
     result++;
   }
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close MyCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 145 "main.pgs"
+#line 146 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 146 "main.pgs"
+#line 147 "main.pgs"
 
   return 0;
 }

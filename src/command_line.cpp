@@ -38,7 +38,7 @@ class CommandLine{
         cout << i << ". " << TABLES[i] << "\n";
       }
       cin >> table_choose;
-      cout << *ORM::ReadAllRecords((char *)TABLES[table_choose]);
+      cout << *ORM::ReadAllRecords(table_choose);
       printf("\n_____________________\n");
     }
     static void SelectValues(){}

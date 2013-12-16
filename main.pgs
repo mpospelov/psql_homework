@@ -80,9 +80,9 @@ typedef struct{
   char theme[string_size];
   char place[string_size];
   char type[string_size];
-}conferece;
+}conference;
 
-conferece sql_conferece;
+conference sql_conference;
 
 typedef struct{
   char teacher_name[string_size];
@@ -119,6 +119,7 @@ void db_disconnect(){
   exec sql disconnect;
   printf("disconnect --OK\n");
 }
+
 
 int orm_read_all_records(char *table_name, void *result){
 
