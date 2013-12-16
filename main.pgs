@@ -1,30 +1,108 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <pgtypes_date.h>
 
 EXEC SQL BEGIN DECLARE SECTION; 
-char ConnectionString [] = "tbd@127.0.0.1:5432";
-char Login [] = "postgres";
-char Password [] = "";
+char connection_string [] = "rgr_db@127.0.0.1:5432";
+char login [] = "postgres";
+char password [] = "";
 EXEC SQL END DECLARE SECTION;
 
+const int string_size = 256;
+const int text_size = 1024;
 
 //для взаимодействия с БД
 EXEC SQL BEGIN DECLARE SECTION;
+
 typedef struct
 {
-  int id;
-  char name[256];
-} dbinfo_t;
+  char name[string_size];
+  char title[string_size];
+  char post[string_size];
+} teacher;
 
-int my_id;
-char my_data[256];
-int my_count;
-dbinfo_t dbval;
+typedef struct
+{
+  char student_name[string_size];
+  char teacher_name[string_size];
+  char theme[string_size];
+  char type[string_size];
+} scientific_managment;
+
+scientific_managment sql_scientific_managment;
+
+typedef struct
+{
+  char achivement_name[string_size];
+  char teacher_name[string_size];
+} achivements_teachers;
+
+achivements_teachers sql_achivements_teachers;
+
+typedef struct{
+  char name[string_size];
+  char description[text_size];
+  bool topicality;
+  date date; 
+} achivement;
+
+achivement sql_achivement;
+
+typedef struct{
+  char achivement_name[string_size];
+  char teacher_name[string_size];
+} authorship;
+
+authorship sql_authorship;
+
+typedef struct{
+  char name[string_size];
+  int page_count;
+  char house[string_size];
+  char circulation[string_size];
+  date date;
+}publication;
+
+
+publication sql_publication;
+
+typedef struct{
+  date conference_date;
+  char teacher_name[string_size];
+  char conference_theme[string_size];
+} conferences_teachers;
+
+conferences_teachers sql_conferences_teachers;
+
+typedef struct{
+  date date;
+  char theme[string_size];
+  char place[string_size];
+  char type[string_size];
+}conferece;
+
+conferece sql_conferece;
+
+typedef struct{
+  char teacher_name[string_size];
+  int discipline_id;
+}disciplines_teachers;
+
+disciplines_teachers sql_disciplines_teachers;
+
+typedef struct{
+  int id;
+  int hours;
+  char name[string_size];
+}discipline;
+
+discipline sql_discipline;
+
 EXEC SQL END DECLARE SECTION;	
 
 void db_connect(){
-  EXEC SQL CONNECT TO :ConnectionString  USER :Login using :Password;
+  EXEC SQL CONNECT TO :connection_string  USER :login using :password;
 
   if( sqlca.sqlcode != 0 || strncmp(sqlca.sqlstate,"00",2))
   {
@@ -42,21 +120,28 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
-int orm_read_all_records(dbinfo_t *result)
-{
-  memset(&dbval, 0, sizeof(dbinfo_t));
-  EXEC SQL DECLARE MyCursor CURSOR FOR
-    SELECT id,COALESCE(name,'') FROM exTab ORDER BY id;
+int orm_read_all_records(char *table_name, void *result){
+
+  EXEC SQL BEGIN DECLARE SECTION;
+    teacher dbval;
+    char *stmt = "SELECT * FROM teachers";
+  EXEC SQL END DECLARE SECTION;	
+  memset(&dbval, 0, sizeof(teacher));
+
+  EXEC SQL PREPARE sqlstmt FROM :stmt;
+  EXEC SQL DECLARE MyCursor CURSOR FOR sqlstmt;
+
   EXEC SQL OPEN MyCursor;
   EXEC SQL WHENEVER NOT FOUND DO BREAK;  
+
   while(1)
   {
     EXEC SQL FETCH MyCursor INTO :dbval;
-    *result = dbval;
+    *((teacher *) result) = dbval;
     result++;
   }
+
   EXEC SQL CLOSE MyCursor;
   EXEC SQL COMMIT;
   return 0;
 }
-

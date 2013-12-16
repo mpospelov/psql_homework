@@ -10,8 +10,7 @@ class CommandLine{
         ShowMenu();
         ExecCommand();
         printf("Hit any key to continue> ");
-        getchar();
-        getchar();        
+        getchar();getchar();
       }
     }
 
