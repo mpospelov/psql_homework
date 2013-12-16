@@ -124,8 +124,9 @@ int orm_read_all_records(char *table_name, void *result){
 
   EXEC SQL BEGIN DECLARE SECTION;
     teacher dbval;
-    char *stmt = "SELECT * FROM teachers";
+    char stmt[string_size];
   EXEC SQL END DECLARE SECTION;	
+  sprintf(stmt, "SELECT * FROM %s", table_name);
   memset(&dbval, 0, sizeof(teacher));
 
   EXEC SQL PREPARE sqlstmt FROM :stmt;

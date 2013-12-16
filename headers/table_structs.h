@@ -4,6 +4,9 @@
 
 const int string_size = 256;
 const int text_size = 1024;
+const char * TABLES[] = {"achivements", "achivements_teachers",
+  "authorships","confereces_teachers","conferences","disciplines",
+  "disciplines_teachers", "publications", "scientific_managements", "teachers"};
 
 typedef struct
 {

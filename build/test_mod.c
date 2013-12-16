@@ -302,32 +302,33 @@ int orm_read_all_records(char *table_name, void *result){
 
   /* exec sql begin declare section */
      
-       
+     
   
 #line 126 "main.pgs"
  teacher dbval ;
  
 #line 127 "main.pgs"
- char * stmt = "SELECT * FROM teachers" ;
+ char stmt [ string_size ] ;
 /* exec sql end declare section */
 #line 128 "main.pgs"
 	
+  sprintf(stmt, "SELECT * FROM %s", table_name);
   memset(&dbval, 0, sizeof(teacher));
 
   { ECPGprepare(__LINE__, NULL, 0, "sqlstmt", stmt);}
-#line 131 "main.pgs"
+#line 132 "main.pgs"
 
   /* declare MyCursor cursor for $1 */
-#line 132 "main.pgs"
+#line 133 "main.pgs"
 
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare MyCursor cursor for $1", 
 	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
-#line 134 "main.pgs"
+#line 135 "main.pgs"
 
   /* exec sql whenever not found  break ; */
-#line 135 "main.pgs"
+#line 136 "main.pgs"
   
 
   while(1)
@@ -339,20 +340,20 @@ int orm_read_all_records(char *table_name, void *result){
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
 	ECPGt_char,&(dbval.post),(long)string_size,(long)1,(string_size)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 139 "main.pgs"
+#line 140 "main.pgs"
 
 if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
-#line 139 "main.pgs"
+#line 140 "main.pgs"
 
     *((teacher *) result) = dbval;
     result++;
   }
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close MyCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 144 "main.pgs"
+#line 145 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 145 "main.pgs"
+#line 146 "main.pgs"
 
   return 0;
 }
