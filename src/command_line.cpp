@@ -44,8 +44,32 @@ class CommandLine{
       cin >> condition;
       ORM::SelectValues(table_choose, condition);
     }
-    static void UpdateValues(){}
-    static void InsertValues(){}
+
+    static void UpdateValues(int table_choose){
+      char *condition = (char *)malloc(sizeof(char) * string_size);
+      char *data = (char *)malloc(sizeof(char) * string_size);
+
+      cout << "<============>\n" 
+           << "Type SELECT condition(\"id>2\", \"name='string'\" etc.)" 
+           << "\n ===> ";
+      cin >> condition;      
+      cout << "<============>\n" 
+           << "Type UPDATE data(\"id=2\", \"name='string'\" etc.)" 
+           << "\n ===> ";
+      cin >> data;      
+      ORM::UpdateValues(table_choose, condition, data);
+    }
+    static void InsertValues(int table_choose){
+      char *data = (char *)malloc(sizeof(char) * string_size);      
+      cout << "<============>\n" 
+           << "Type INSERT data(2, 'string' etc.)" 
+           << "\n ===> ";
+
+      cin >> data;
+
+      ORM::InsertValues(table_choose, data);
+    }
+
     static void DeleteValues(){}
     static void DynamicSqlInsert(){}
     static void DynamicSqlSelectOne(){}
@@ -70,10 +94,10 @@ class CommandLine{
           SelectValues(table_choose);
           break;
         case 3:
-          UpdateValues();
+          UpdateValues(table_choose);
           break;          
         case 4:
-          InsertValues();
+          InsertValues(table_choose);
           break;          
         case 5:
           DeleteValues();

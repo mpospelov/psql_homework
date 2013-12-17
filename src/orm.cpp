@@ -19,5 +19,13 @@ class ORM{
           records -> c_records, condition);
       records -> print();
     }
+
+    static void UpdateValues(int table_choose, char *condition, char *data){
+      orm_update_values((char *)TABLES[table_choose], condition, data);
+    }
+
+    static void InsertValues(int table_choose, char *data){
+      orm_insert_values((char *)TABLES[table_choose], data);
+    }
 };
 

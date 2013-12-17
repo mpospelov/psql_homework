@@ -44,35 +44,12 @@ void db_disconnect(){
 }
 
 
-void orm_read_all_records(char *table_name, cursor *result){
-  EXEC SQL BEGIN DECLARE SECTION;
-    cursor dbval;
-    char stmt[string_size];
-  EXEC SQL END DECLARE SECTION;	
-  sprintf(stmt, "SELECT * FROM %s", table_name);
-
-  EXEC SQL PREPARE sqlstmt FROM :stmt;
-  EXEC SQL DECLARE ReadAllRecordCursor CURSOR FOR sqlstmt;
-
-  EXEC SQL OPEN ReadAllRecordCursor;
-  EXEC SQL WHENEVER NOT FOUND DO BREAK;  
-
-  while(1)
-  {
-    EXEC SQL FETCH ReadAllRecordCursor INTO :dbval;
-    *result = dbval;
-    result ++;
-  }
-
-  EXEC SQL CLOSE ReadAllRecordCursor;
-  EXEC SQL COMMIT;
-}
 
 void orm_select_values(char *table_name, cursor *result, char *condition ){
 
   EXEC SQL BEGIN DECLARE SECTION;
     cursor dbval;
-    char stmt[string_size];
+    char stmt[text_size];
   EXEC SQL END DECLARE SECTION;	
 
   sprintf(stmt, "SELECT * FROM %s WHERE %s", table_name, condition);
@@ -94,3 +71,44 @@ void orm_select_values(char *table_name, cursor *result, char *condition ){
   EXEC SQL COMMIT;
 }
 
+void orm_read_all_records(char *table_name, cursor *result){
+  EXEC SQL BEGIN DECLARE SECTION;
+    cursor dbval;
+    char stmt[text_size];
+  EXEC SQL END DECLARE SECTION;	
+  sprintf(stmt, "SELECT * FROM %s", table_name);
+
+  EXEC SQL PREPARE sqlstmt FROM :stmt;
+  EXEC SQL DECLARE ReadAllRecordCursor CURSOR FOR sqlstmt;
+
+  EXEC SQL OPEN ReadAllRecordCursor;
+  EXEC SQL WHENEVER NOT FOUND DO BREAK;  
+
+  while(1)
+  {
+    EXEC SQL FETCH ReadAllRecordCursor INTO :dbval;
+    *result = dbval;
+    result ++;
+  }
+
+  EXEC SQL CLOSE ReadAllRecordCursor;
+  EXEC SQL COMMIT;
+}
+
+void orm_update_values(char *table_name, char *condition, char *data){
+  EXEC SQL BEGIN DECLARE SECTION;
+    char stmt[text_size];
+  EXEC SQL END DECLARE SECTION;
+  sprintf(stmt, "UPDATE %s SET %s WHERE %s", table_name, data, condition);
+  EXEC SQL EXECUTE IMMEDIATE :stmt;
+  EXEC SQL COMMIT;
+}
+
+void orm_insert_values(char *table_name, char *data){
+  EXEC SQL BEGIN DECLARE SECTION;
+    char stmt[text_size];
+  EXEC SQL END DECLARE SECTION;
+  sprintf(stmt, "INSERT INTO %s VALUES(%s)", table_name, data);
+  EXEC SQL EXECUTE IMMEDIATE :stmt;
+  EXEC SQL COMMIT;  
+}
