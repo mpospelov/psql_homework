@@ -14,89 +14,6 @@ const int text_size = 1024;
 
 //для взаимодействия с БД
 EXEC SQL BEGIN DECLARE SECTION;
-
-typedef struct
-{
-  char name[string_size];
-  char title[string_size];
-  char post[string_size];
-} teacher;
-
-typedef struct
-{
-  char student_name[string_size];
-  char teacher_name[string_size];
-  char theme[string_size];
-  char type[string_size];
-} scientific_managment;
-
-scientific_managment sql_scientific_managment;
-
-typedef struct
-{
-  char achivement_name[string_size];
-  char teacher_name[string_size];
-} achivements_teachers;
-
-achivements_teachers sql_achivements_teachers;
-
-typedef struct{
-  char name[string_size];
-  char description[text_size];
-  bool topicality;
-  date date; 
-} achivement;
-
-achivement sql_achivement;
-
-typedef struct{
-  char achivement_name[string_size];
-  char teacher_name[string_size];
-} authorship;
-
-authorship sql_authorship;
-
-typedef struct{
-  char name[string_size];
-  int page_count;
-  char house[string_size];
-  char circulation[string_size];
-  date date;
-}publication;
-
-
-publication sql_publication;
-
-typedef struct{
-  date conference_date;
-  char teacher_name[string_size];
-  char conference_theme[string_size];
-} conferences_teachers;
-
-conferences_teachers sql_conferences_teachers;
-
-typedef struct{
-  date date;
-  char theme[string_size];
-  char place[string_size];
-  char type[string_size];
-}conference;
-
-conference sql_conference;
-
-typedef struct{
-  char teacher_name[string_size];
-  int discipline_id;
-}disciplines_teachers;
-
-disciplines_teachers sql_disciplines_teachers;
-
-typedef struct{
-  int id;
-  int hours;
-  char name[string_size];
-}discipline;
-
 typedef struct{
   char field0[string_size];
   char field1[string_size];
@@ -105,8 +22,6 @@ typedef struct{
   char field4[string_size];
   char field5[string_size];
 } cursor;
-discipline sql_discipline;
-
 EXEC SQL END DECLARE SECTION;	
 
 void db_connect(){
@@ -129,7 +44,7 @@ void db_disconnect(){
 }
 
 
-int orm_read_all_records(char *table_name, cursor *result){
+void orm_read_all_records(char *table_name, cursor *result){
   EXEC SQL BEGIN DECLARE SECTION;
     cursor dbval;
     char stmt[string_size];
@@ -137,19 +52,45 @@ int orm_read_all_records(char *table_name, cursor *result){
   sprintf(stmt, "SELECT * FROM %s", table_name);
 
   EXEC SQL PREPARE sqlstmt FROM :stmt;
-  EXEC SQL DECLARE MyCursor CURSOR FOR sqlstmt;
+  EXEC SQL DECLARE ReadAllRecordCursor CURSOR FOR sqlstmt;
 
-  EXEC SQL OPEN MyCursor;
+  EXEC SQL OPEN ReadAllRecordCursor;
   EXEC SQL WHENEVER NOT FOUND DO BREAK;  
 
   while(1)
   {
-    EXEC SQL FETCH MyCursor INTO :dbval;
+    EXEC SQL FETCH ReadAllRecordCursor INTO :dbval;
     *result = dbval;
     result ++;
   }
 
-  EXEC SQL CLOSE MyCursor;
+  EXEC SQL CLOSE ReadAllRecordCursor;
   EXEC SQL COMMIT;
-  return 0;
 }
+
+void orm_select_values(char *table_name, cursor *result, char *condition ){
+
+  EXEC SQL BEGIN DECLARE SECTION;
+    cursor dbval;
+    char stmt[string_size];
+  EXEC SQL END DECLARE SECTION;	
+
+  sprintf(stmt, "SELECT * FROM %s WHERE %s", table_name, condition);
+
+  EXEC SQL PREPARE sqlstmt FROM :stmt;
+  EXEC SQL DECLARE SelectValuesCursor CURSOR FOR sqlstmt;
+
+  EXEC SQL OPEN SelectValuesCursor;
+  EXEC SQL WHENEVER NOT FOUND DO BREAK;  
+
+  while(1)
+  {
+    EXEC SQL FETCH SelectValuesCursor INTO :dbval;
+    *result = dbval;
+    result++;
+  }
+
+  EXEC SQL CLOSE SelectValuesCursor;
+  EXEC SQL COMMIT;
+}
+

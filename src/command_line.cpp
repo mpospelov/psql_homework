@@ -18,28 +18,32 @@ class CommandLine{
     static string lastCommand;
 
     static void ShowMenu(){
-      printf("1. show\n");
-      printf("2. select values\n");
-      printf("3. update values\n");
-      printf("4. insert values\n");
-      printf("5. delete values\n");
-      printf("6. Dynamic sql insert\n");
-      printf("7. Dynamic sql select one\n");
-      printf("8. Dynamic sql select more than one\n");
-      printf("9. quit\n");
-      printf("choose menu item > ");
+      system("clear");
+      cout << "Select Action:\n";
+      cout << "\t1. show\n";
+      cout << "\t2. select values\n";
+      cout << "\t3. update values\n";
+      cout << "\t4. insert values\n";
+      cout << "\t5. delete values\n";
+      cout << "\t6. Dynamic sql insert\n";
+      cout << "\t7. Dynamic sql select one\n";
+      cout << "\t8. Dynamic sql select more than one\n";
+      cout << "\t9. quit\n";
+      cout << "Choose menu item ===> ";
     }
 
-    static void Show(){
-      int table_choose;
-      cout << "Choose table name:\n";
-      for(int i = 0; i < TABLES_COUNT; i++ )
-        cout << i << ". " << TABLES[i] << "\n"; 
-      cin >> table_choose;
+    static void Show(int table_choose){
       ORM::ReadAllRecords(table_choose);
     }
 
-    static void SelectValues(){}
+    static void SelectValues(int table_choose){
+      char *condition = (char *)malloc(sizeof(char) * string_size);
+      cout << "<============>\n" 
+           << "Type SELECT condition(\"id > 2\", \"name = 'string'\" etc.)" 
+           << "\n ===> ";
+      cin >> condition;
+      ORM::SelectValues(table_choose, condition);
+    }
     static void UpdateValues(){}
     static void InsertValues(){}
     static void DeleteValues(){}
@@ -48,13 +52,22 @@ class CommandLine{
     static void DynamicSqlSelectMore(){}
     
     static void ExecCommand(){
+      //Выбор выполняемой команды
       cin >> lastCommand;
+
+      int table_choose;
+      cout << "<============>\n" << "Choose table name:\n";
+      for(int i = 0; i < TABLES_COUNT; i++ )
+        cout <<"\t"<< i << ". " << TABLES[i] << "\n"; 
+      cout << "Choose menu item ===> ";      
+      cin >> table_choose;
+      
       switch(atoi(lastCommand.c_str())){
         case 1:
-          Show();
+          Show(table_choose);
           break;
         case 2:
-          SelectValues();
+          SelectValues(table_choose);
           break;
         case 3:
           UpdateValues();
