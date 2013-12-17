@@ -8,10 +8,13 @@ using namespace std;
 class ORM{
   public:
     static void ReadAllRecords(int table_choose){
-      BaseTable *records = new Teachers();
+
+      BaseTable *records = TableFactory::Create(table_choose); 
+
       orm_read_all_records((char *)TABLES[table_choose],
           records -> c_records);
       records -> print();
+
     }
 };
 
