@@ -10,22 +10,22 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pgtypes_date.h>
-
 /* exec sql begin declare section */ 
     
     
     
 
-#line 7 "main.pgs"
+#line 6 "main.pgs"
  char connection_string [] = "rgr_db@127.0.0.1:5432" ;
  
-#line 8 "main.pgs"
+#line 7 "main.pgs"
  char login [] = "postgres" ;
  
-#line 9 "main.pgs"
+#line 8 "main.pgs"
  char password [] = "" ;
 /* exec sql end declare section */
-#line 10 "main.pgs"
+#line 9 "main.pgs"
+
 
 
 const int string_size = 256;
@@ -243,6 +243,35 @@ typedef struct {
 
 
  
+   
+   
+   
+    
+   
+   
+ typedef struct { 
+#line 101 "main.pgs"
+ char field0 [ string_size ] ;
+ 
+#line 102 "main.pgs"
+ char field1 [ string_size ] ;
+ 
+#line 103 "main.pgs"
+ char field2 [ string_size ] ;
+ 
+#line 104 "main.pgs"
+ char field3 [ string_size ] ;
+ 
+#line 105 "main.pgs"
+ char field4 [ string_size ] ;
+ 
+#line 106 "main.pgs"
+ char field5 [ string_size ] ;
+ }  cursor ;
+
+#line 107 "main.pgs"
+
+ 
 
 
 #line 33 "main.pgs"
@@ -269,15 +298,15 @@ typedef struct {
 #line 92 "main.pgs"
  disciplines_teachers sql_disciplines_teachers ;
  
-#line 100 "main.pgs"
+#line 108 "main.pgs"
  discipline sql_discipline ;
 /* exec sql end declare section */
-#line 102 "main.pgs"
+#line 110 "main.pgs"
 	
 
 void db_connect(){
   { ECPGconnect(__LINE__, 0, connection_string , login , password , NULL, 0); }
-#line 105 "main.pgs"
+#line 113 "main.pgs"
 
 
   if( sqlca.sqlcode != 0 || strncmp(sqlca.sqlstate,"00",2))
@@ -293,68 +322,72 @@ void db_connect(){
 
 void db_disconnect(){
   { ECPGdisconnect(__LINE__, "CURRENT");}
-#line 119 "main.pgs"
+#line 127 "main.pgs"
 
   printf("disconnect --OK\n");
 }
 
 
-int orm_read_all_records(char *table_name, void *result){
-
+int orm_read_all_records(char *table_name, cursor *result){
   /* exec sql begin declare section */
      
      
   
-#line 127 "main.pgs"
- teacher dbval ;
+#line 134 "main.pgs"
+ cursor dbval ;
  
-#line 128 "main.pgs"
+#line 135 "main.pgs"
  char stmt [ string_size ] ;
 /* exec sql end declare section */
-#line 129 "main.pgs"
+#line 136 "main.pgs"
 	
   sprintf(stmt, "SELECT * FROM %s", table_name);
-  memset(&dbval, 0, sizeof(teacher));
 
   { ECPGprepare(__LINE__, NULL, 0, "sqlstmt", stmt);}
-#line 133 "main.pgs"
+#line 139 "main.pgs"
 
   /* declare MyCursor cursor for $1 */
-#line 134 "main.pgs"
+#line 140 "main.pgs"
 
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare MyCursor cursor for $1", 
 	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
-#line 136 "main.pgs"
+#line 142 "main.pgs"
 
   /* exec sql whenever not found  break ; */
-#line 137 "main.pgs"
+#line 143 "main.pgs"
   
 
   while(1)
   {
     { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch MyCursor", ECPGt_EOIT, 
-	ECPGt_char,&(dbval.name),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_char,&(dbval.field0),(long)string_size,(long)1,(string_size)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.title),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_char,&(dbval.field1),(long)string_size,(long)1,(string_size)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.post),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_char,&(dbval.field2),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field3),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field4),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field5),(long)string_size,(long)1,(string_size)*sizeof(char), 
 	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 141 "main.pgs"
+#line 147 "main.pgs"
 
 if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
-#line 141 "main.pgs"
+#line 147 "main.pgs"
 
-    *((teacher *) result) = dbval;
-    result++;
+    *result = dbval;
+    result ++;
   }
 
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close MyCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 146 "main.pgs"
+#line 152 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 147 "main.pgs"
+#line 153 "main.pgs"
 
   return 0;
 }

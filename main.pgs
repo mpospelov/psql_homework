@@ -2,12 +2,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <pgtypes_date.h>
-
 EXEC SQL BEGIN DECLARE SECTION; 
 char connection_string [] = "rgr_db@127.0.0.1:5432";
 char login [] = "postgres";
 char password [] = "";
 EXEC SQL END DECLARE SECTION;
+
 
 const int string_size = 256;
 const int text_size = 1024;
@@ -97,6 +97,14 @@ typedef struct{
   char name[string_size];
 }discipline;
 
+typedef struct{
+  char field0[string_size];
+  char field1[string_size];
+  char field2[string_size];
+  char field3[string_size]; 
+  char field4[string_size];
+  char field5[string_size];
+} cursor;
 discipline sql_discipline;
 
 EXEC SQL END DECLARE SECTION;	
@@ -121,14 +129,12 @@ void db_disconnect(){
 }
 
 
-int orm_read_all_records(char *table_name, void *result){
-
+int orm_read_all_records(char *table_name, cursor *result){
   EXEC SQL BEGIN DECLARE SECTION;
-    teacher dbval;
+    cursor dbval;
     char stmt[string_size];
   EXEC SQL END DECLARE SECTION;	
   sprintf(stmt, "SELECT * FROM %s", table_name);
-  memset(&dbval, 0, sizeof(teacher));
 
   EXEC SQL PREPARE sqlstmt FROM :stmt;
   EXEC SQL DECLARE MyCursor CURSOR FOR sqlstmt;
@@ -139,8 +145,8 @@ int orm_read_all_records(char *table_name, void *result){
   while(1)
   {
     EXEC SQL FETCH MyCursor INTO :dbval;
-    *((teacher *) result) = dbval;
-    result++;
+    *result = dbval;
+    result ++;
   }
 
   EXEC SQL CLOSE MyCursor;

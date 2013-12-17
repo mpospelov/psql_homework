@@ -32,15 +32,13 @@ class CommandLine{
 
     static void Show(){
       int table_choose;
-      printf("_____________________\n");
-      printf("0. Choose table name:\n\n");
-      for(int i = 0; i < 10 ; i++){
-        cout << i << ". " << TABLES[i] << "\n";
-      }
+      cout << "Choose table name:\n";
+      for(int i = 0; i < TABLES_COUNT; i++ )
+        cout << i << ". " << TABLES[i] << "\n"; 
       cin >> table_choose;
-      cout << *ORM::ReadAllRecords(table_choose);
-      printf("\n_____________________\n");
+      ORM::ReadAllRecords(table_choose);
     }
+
     static void SelectValues(){}
     static void UpdateValues(){}
     static void InsertValues(){}
