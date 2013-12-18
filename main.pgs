@@ -53,6 +53,7 @@ void orm_select_values(char *table_name, cursor *result, char *condition ){
   EXEC SQL END DECLARE SECTION;	
 
   sprintf(stmt, "SELECT * FROM %s WHERE %s", table_name, condition);
+  printf("Executing query: %s\n", stmt);
 
   EXEC SQL PREPARE sqlstmt FROM :stmt;
   EXEC SQL DECLARE SelectValuesCursor CURSOR FOR sqlstmt;
@@ -77,6 +78,7 @@ void orm_read_all_records(char *table_name, cursor *result){
     char stmt[text_size];
   EXEC SQL END DECLARE SECTION;	
   sprintf(stmt, "SELECT * FROM %s", table_name);
+  printf("Executing query: %s\n", stmt);
 
   EXEC SQL PREPARE sqlstmt FROM :stmt;
   EXEC SQL DECLARE ReadAllRecordCursor CURSOR FOR sqlstmt;
@@ -99,7 +101,8 @@ void orm_update_values(char *table_name, char *condition, char *data){
   EXEC SQL BEGIN DECLARE SECTION;
     char stmt[text_size];
   EXEC SQL END DECLARE SECTION;
-  sprintf(stmt, "UPDATE %s SET %s WHERE %s", table_name, data, condition);
+  sprintf(stmt, "UPDATE %s SET %s WHERE %s\n", table_name, data, condition);
+  printf("Executing query: %s", stmt);
   EXEC SQL EXECUTE IMMEDIATE :stmt;
   EXEC SQL COMMIT;
 }
@@ -109,6 +112,17 @@ void orm_insert_values(char *table_name, char *data){
     char stmt[text_size];
   EXEC SQL END DECLARE SECTION;
   sprintf(stmt, "INSERT INTO %s VALUES(%s)", table_name, data);
+  printf("Executing query: %s\n", stmt);
   EXEC SQL EXECUTE IMMEDIATE :stmt;
   EXEC SQL COMMIT;  
+}
+
+void orm_delete_values(char *table_name, char *condition){
+  EXEC SQL BEGIN DECLARE SECTION;
+    char stmt[text_size];
+  EXEC SQL END DECLARE SECTION;
+  sprintf(stmt, "DELETE FROM %s WHERE %s", table_name, condition);
+  printf("Executing query: %s\n", stmt);
+  EXEC SQL EXECUTE IMMEDIATE :stmt;
+  EXEC SQL COMMIT;
 }

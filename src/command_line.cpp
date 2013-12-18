@@ -10,7 +10,7 @@ class CommandLine{
         ShowMenu();
         ExecCommand();
         printf("Hit any key to continue> ");
-        getchar();getchar();
+        getchar();
       }
     }
 
@@ -25,10 +25,6 @@ class CommandLine{
       cout << "\t3. update values\n";
       cout << "\t4. insert values\n";
       cout << "\t5. delete values\n";
-      cout << "\t6. Dynamic sql insert\n";
-      cout << "\t7. Dynamic sql select one\n";
-      cout << "\t8. Dynamic sql select more than one\n";
-      cout << "\t9. quit\n";
       cout << "Choose menu item ===> ";
     }
 
@@ -37,43 +33,54 @@ class CommandLine{
     }
 
     static void SelectValues(int table_choose){
-      char *condition = (char *)malloc(sizeof(char) * string_size);
+      char condition[string_size];
       cout << "<============>\n" 
            << "Type SELECT condition(\"id > 2\", \"name = 'string'\" etc.)" 
            << "\n ===> ";
-      cin >> condition;
-      ORM::SelectValues(table_choose, condition);
+      getchar();
+      cin.getline(condition, string_size);
+      ORM::SelectValues(table_choose, &condition[0]);
     }
 
     static void UpdateValues(int table_choose){
       char *condition = (char *)malloc(sizeof(char) * string_size);
       char *data = (char *)malloc(sizeof(char) * string_size);
-
       cout << "<============>\n" 
            << "Type SELECT condition(\"id>2\", \"name='string'\" etc.)" 
            << "\n ===> ";
-      cin >> condition;      
+      getchar();
+      cin.getline(condition, string_size);
       cout << "<============>\n" 
            << "Type UPDATE data(\"id=2\", \"name='string'\" etc.)" 
            << "\n ===> ";
-      cin >> data;      
+      cin.getline(data, string_size);
       ORM::UpdateValues(table_choose, condition, data);
     }
+
     static void InsertValues(int table_choose){
       char *data = (char *)malloc(sizeof(char) * string_size);      
       cout << "<============>\n" 
            << "Type INSERT data(2, 'string' etc.)" 
            << "\n ===> ";
 
-      cin >> data;
+      getchar();
+      cin.getline(data, string_size);
 
       ORM::InsertValues(table_choose, data);
     }
 
-    static void DeleteValues(){}
-    static void DynamicSqlInsert(){}
-    static void DynamicSqlSelectOne(){}
-    static void DynamicSqlSelectMore(){}
+    static void DeleteValues(int table_choose){
+      char *condition = (char *)malloc(sizeof(char) * string_size);
+
+      cout << "<============>\n" 
+           << "Type DELETE condition(id>2, name='string' etc...)" 
+           << "\n ===> ";
+      
+      getchar();
+      cin.getline(condition, string_size);
+
+      ORM::DeleteValues(table_choose, condition);
+    }
     
     static void ExecCommand(){
       //Выбор выполняемой команды
@@ -83,9 +90,9 @@ class CommandLine{
       cout << "<============>\n" << "Choose table name:\n";
       for(int i = 0; i < TABLES_COUNT; i++ )
         cout <<"\t"<< i << ". " << TABLES[i] << "\n"; 
-      cout << "Choose menu item ===> ";      
+      cout << "Choose menu item ===> ";
       cin >> table_choose;
-      
+
       switch(atoi(lastCommand.c_str())){
         case 1:
           Show(table_choose);
@@ -100,20 +107,8 @@ class CommandLine{
           InsertValues(table_choose);
           break;          
         case 5:
-          DeleteValues();
+          DeleteValues(table_choose);
           break;          
-        case 6:
-          DynamicSqlInsert();
-          break;          
-        case 7:
-          DynamicSqlSelectOne();
-          break;          
-        case 8:
-          DynamicSqlSelectMore();
-          break;          
-        case 9:
-          exit(1);
-          break;
       }
     }
 };

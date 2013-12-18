@@ -11,6 +11,7 @@ class ORM{
       orm_read_all_records((char *)TABLES[table_choose],
           records -> c_records);
       records -> print();
+      getchar();
     }
 
     static void SelectValues(int table_choose, char *condition){
@@ -27,5 +28,10 @@ class ORM{
     static void InsertValues(int table_choose, char *data){
       orm_insert_values((char *)TABLES[table_choose], data);
     }
+
+    static void DeleteValues(int table_choose, char *condition){
+      orm_delete_values((char *)TABLES[table_choose], condition);
+    }
+
 };
 

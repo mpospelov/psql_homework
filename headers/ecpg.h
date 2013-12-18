@@ -10,6 +10,7 @@ extern "C" {
   void orm_select_values(char *table_name, cursor *result, char *condition);
   void orm_update_values(char *table_name, char *condition, char *data);
   void orm_insert_values(char *table_name, char *data);
+  void orm_delete_values(char *table_name, char *condition);
   
 
 #ifdef __cplusplus
