@@ -89,191 +89,88 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
-
-
-void orm_select_values(char *table_name, cursor *result, char *condition ){
-
+void cursor_query(char *query, cursor *result){
   /* exec sql begin declare section */
      
      
   
-#line 51 "main.pgs"
+#line 48 "main.pgs"
  cursor dbval ;
  
-#line 52 "main.pgs"
+#line 49 "main.pgs"
  char stmt [ text_size ] ;
 /* exec sql end declare section */
-#line 53 "main.pgs"
+#line 50 "main.pgs"
 	
-
-  sprintf(stmt, "SELECT * FROM %s WHERE %s", table_name, condition);
+  sprintf(stmt, "%s", query);
   printf("Executing query: %s\n", stmt);
 
   { ECPGprepare(__LINE__, NULL, 0, "sqlstmt", stmt);}
+#line 54 "main.pgs"
+
+  /* declare CursorQuery cursor for $1 */
+#line 55 "main.pgs"
+
+
+  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare CursorQuery cursor for $1", 
+	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
+#line 57 "main.pgs"
+
+  /* exec sql whenever not found  break ; */
 #line 58 "main.pgs"
+  
 
-  /* declare SelectValuesCursor cursor for $1 */
-#line 59 "main.pgs"
-
-
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare SelectValuesCursor cursor for $1", 
-	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
-#line 61 "main.pgs"
-
-  /* exec sql whenever not found  break ; */
+  while(1)
+  {
+    { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch CursorQuery", ECPGt_EOIT, 
+	ECPGt_char,&(dbval.field0),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field1),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field2),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field3),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field4),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
+	ECPGt_char,&(dbval.field5),(long)string_size,(long)1,(string_size)*sizeof(char), 
+	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
 #line 62 "main.pgs"
-  
-
-  while(1)
-  {
-    { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch SelectValuesCursor", ECPGt_EOIT, 
-	ECPGt_char,&(dbval.field0),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field1),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field2),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field3),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field4),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field5),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 66 "main.pgs"
 
 if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
-#line 66 "main.pgs"
-
-    *result = dbval;
-    result++;
-  }
-
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close SelectValuesCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 71 "main.pgs"
-
-  { ECPGtrans(__LINE__, NULL, "commit");}
-#line 72 "main.pgs"
-
-}
-
-void orm_read_all_records(char *table_name, cursor *result){
-  /* exec sql begin declare section */
-     
-     
-  
-#line 77 "main.pgs"
- cursor dbval ;
- 
-#line 78 "main.pgs"
- char stmt [ text_size ] ;
-/* exec sql end declare section */
-#line 79 "main.pgs"
-	
-  sprintf(stmt, "SELECT * FROM %s", table_name);
-  printf("Executing query: %s\n", stmt);
-
-  { ECPGprepare(__LINE__, NULL, 0, "sqlstmt", stmt);}
-#line 83 "main.pgs"
-
-  /* declare ReadAllRecordCursor cursor for $1 */
-#line 84 "main.pgs"
-
-
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "declare ReadAllRecordCursor cursor for $1", 
-	ECPGt_char_variable,(ECPGprepared_statement(NULL, "sqlstmt", __LINE__)),(long)1,(long)1,(1)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EOIT, ECPGt_EORT);}
-#line 86 "main.pgs"
-
-  /* exec sql whenever not found  break ; */
-#line 87 "main.pgs"
-  
-
-  while(1)
-  {
-    { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "fetch ReadAllRecordCursor", ECPGt_EOIT, 
-	ECPGt_char,&(dbval.field0),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field1),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field2),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field3),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field4),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, 
-	ECPGt_char,&(dbval.field5),(long)string_size,(long)1,(string_size)*sizeof(char), 
-	ECPGt_NO_INDICATOR, NULL , 0L, 0L, 0L, ECPGt_EORT);
-#line 91 "main.pgs"
-
-if (sqlca.sqlcode == ECPG_NOT_FOUND) break;}
-#line 91 "main.pgs"
+#line 62 "main.pgs"
 
     *result = dbval;
     result ++;
   }
 
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close ReadAllRecordCursor", ECPGt_EOIT, ECPGt_EORT);}
-#line 96 "main.pgs"
+  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_normal, "close CursorQuery", ECPGt_EOIT, ECPGt_EORT);}
+#line 67 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 97 "main.pgs"
+#line 68 "main.pgs"
 
+  printf("Query Finished!\n");
 }
 
-void orm_update_values(char *table_name, char *condition, char *data){
+void simple_query(char *query){
   /* exec sql begin declare section */
      
   
-#line 102 "main.pgs"
+#line 74 "main.pgs"
  char stmt [ text_size ] ;
 /* exec sql end declare section */
-#line 103 "main.pgs"
+#line 75 "main.pgs"
 
-  sprintf(stmt, "UPDATE %s SET %s WHERE %s\n", table_name, data, condition);
-  printf("Executing query: %s", stmt);
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_exec_immediate, stmt, ECPGt_EOIT, ECPGt_EORT);}
-#line 106 "main.pgs"
-
-  { ECPGtrans(__LINE__, NULL, "commit");}
-#line 107 "main.pgs"
-
-}
-
-void orm_insert_values(char *table_name, char *data){
-  /* exec sql begin declare section */
-     
-  
-#line 112 "main.pgs"
- char stmt [ text_size ] ;
-/* exec sql end declare section */
-#line 113 "main.pgs"
-
-  sprintf(stmt, "INSERT INTO %s VALUES(%s)", table_name, data);
+  sprintf(stmt, "%s", query);
   printf("Executing query: %s\n", stmt);
   { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_exec_immediate, stmt, ECPGt_EOIT, ECPGt_EORT);}
-#line 116 "main.pgs"
+#line 78 "main.pgs"
 
   { ECPGtrans(__LINE__, NULL, "commit");}
-#line 117 "main.pgs"
-  
+#line 79 "main.pgs"
+
+  printf("Query Finished!\n");
 }
 
-void orm_delete_values(char *table_name, char *condition){
-  /* exec sql begin declare section */
-     
-  
-#line 122 "main.pgs"
- char stmt [ text_size ] ;
-/* exec sql end declare section */
-#line 123 "main.pgs"
-
-  sprintf(stmt, "DELETE FROM %s WHERE %s", table_name, condition);
-  printf("Executing query: %s\n", stmt);
-  { ECPGdo(__LINE__, 0, 1, NULL, 0, ECPGst_exec_immediate, stmt, ECPGt_EOIT, ECPGt_EORT);}
-#line 126 "main.pgs"
-
-  { ECPGtrans(__LINE__, NULL, "commit");}
-#line 127 "main.pgs"
-
-}

@@ -8,29 +8,38 @@ class ORM{
   public:
     static void ReadAllRecords(int table_choose){
       BaseTable *records = TableFactory::Create(table_choose); 
-      orm_read_all_records((char *)TABLES[table_choose],
-          records -> c_records);
+      char query[text_size];
+      sprintf(query, "SELECT * FROM %s", TABLES[table_choose]);
+      cursor_query(&query[0], records -> c_records);
       records -> print();
       getchar();
     }
 
     static void SelectValues(int table_choose, char *condition){
       BaseTable *records = TableFactory::Create(table_choose); 
-      orm_select_values((char *)TABLES[table_choose],
-          records -> c_records, condition);
+      char query[text_size];
+      sprintf(query, "SELECT * FROM %s WHERE %s", TABLES[table_choose], condition);
+      cursor_query(&query[0], records -> c_records);
       records -> print();
     }
 
     static void UpdateValues(int table_choose, char *condition, char *data){
-      orm_update_values((char *)TABLES[table_choose], condition, data);
+      char query[text_size];
+      sprintf(query, "UPDATE %s SET %s WHERE %s\n",
+          TABLES[table_choose], data, condition);      
+      simple_query(query);
     }
 
     static void InsertValues(int table_choose, char *data){
-      orm_insert_values((char *)TABLES[table_choose], data);
+      char query[text_size];
+      sprintf(query, "INSERT INTO %s VALUES(%s)", TABLES[table_choose], data);
+      simple_query(query);
     }
 
     static void DeleteValues(int table_choose, char *condition){
-      orm_delete_values((char *)TABLES[table_choose], condition);
+      char query[text_size];
+      sprintf(query, "DELETE FROM %s WHERE %s", TABLES[table_choose], condition);
+      simple_query(query);
     }
 
 };
