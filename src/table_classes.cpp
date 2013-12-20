@@ -87,9 +87,9 @@ class Authorships : public BaseTable{
     }    
 };
 
-class ConferecesTeachers : public BaseTable{
+class ConferencesTeachers : public BaseTable{
   public:
-    ConferecesTeachers() : BaseTable(){}
+    ConferencesTeachers() : BaseTable(){}
     virtual void print(){
       cursor *iterator = (cursor *) c_records;
       cout << "{\n";
@@ -106,9 +106,9 @@ class ConferecesTeachers : public BaseTable{
     }    
 };
 
-class Confereces : public BaseTable{
+class Conferences : public BaseTable{
   public:
-    Confereces() : BaseTable(){}
+    Conferences() : BaseTable(){}
     virtual void print(){
       cursor *iterator = (cursor *) c_records;
       cout << "{\n";
@@ -207,7 +207,7 @@ class ScientificManagements : public BaseTable{
 class TableFactory{
   public:
     static BaseTable* Create(int table_choose){
-      switch(table_choose%9){
+      switch(table_choose){
         case 0:
           return new Achivements();
         case 1:
@@ -215,9 +215,9 @@ class TableFactory{
         case 2:
           return new Authorships();
         case 3:
-          return new ConferecesTeachers();
+          return new ConferencesTeachers();
         case 4:
-          return new Confereces();
+          return new Conferences();
         case 5:
           return new Disciplines();
         case 6:

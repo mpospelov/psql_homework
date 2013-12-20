@@ -45,6 +45,7 @@ class CommandLine{
     static void UpdateValues(int table_choose){
       char *condition = (char *)malloc(sizeof(char) * string_size);
       char *data = (char *)malloc(sizeof(char) * string_size);
+
       BaseTable *table = TableFactory::Create(table_choose);
       table -> print_columns();
 
