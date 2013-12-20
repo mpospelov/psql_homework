@@ -126,7 +126,7 @@ class CommandLine{
                      "ON conferences_teachers.teacher_name = authorships.teacher_name "
                      "INNER JOIN conferences "
                      "ON conferences_teachers.conference_theme = conferences.theme "
-                     "OR conferences_teachers.conference_date = conferences.date "
+                     "AND conferences_teachers.conference_date = conferences.date "
                      "WHERE conferences.date > '2006-1-1' "
                      "AND conferences.date < '2007-1-1' "
                      "AND publications.date < '2002-1-1' "
