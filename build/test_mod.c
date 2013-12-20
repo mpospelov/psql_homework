@@ -16,7 +16,7 @@
     
 
 #line 6 "main.pgs"
- char connection_string [] = "rgr_db@127.0.0.1:5432" ;
+ char connection_string [] = "nastya_rgr@127.0.0.1:5432" ;
  
 #line 7 "main.pgs"
  char login [] = "postgres" ;

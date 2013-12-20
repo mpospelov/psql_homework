@@ -87,50 +87,54 @@ class CommandLine{
 
     static void FirstSpecialQuery(){
       BaseTable *t = new BaseTable();
-      char query[] = "SELECT teachers.name "
-                     "FROM teachers "
-                     "INNER JOIN achivements_teachers "
-                     "ON achivements_teachers.teacher_name = teachers.name "
-                     "WHERE achivements_teachers.date > '2007-1-1' "
-                     "GROUP BY teachers.name";
+      char query[] = "SELECT houses.address, houses.number "
+                     "FROM houses "
+                     "INNER JOIN flats "
+                     "ON houses.address = flats.address "
+                     "INNER JOIN tenants "
+                     "ON flats.number = tenants.flat_number "
+                     "AND flats.address = tenants.address "
+                     "INNER JOIN benefits_tenants "
+                     "ON benefits_tenants.tenant_name = tenants.name "
+                     "WHERE benefits_tenants.benefit_name = 'по инвалидности' "
+                     "GROUP BY houses.address, houses.number";
       cursor_query(query, t -> c_records);
       cursor *query_cursor = t -> c_records;
       for(;query_cursor -> field0[0] != '\0'; query_cursor++)
-        cout << query_cursor -> field0 << endl;
+        cout << query_cursor -> field0 << " "
+             << query_cursor -> field1 << endl;
+
       getchar();
     }
 
     static void SecondSpecialQuery(){
       BaseTable *t = new BaseTable();
-      char query[] = "SELECT disciplines.name "
-                     "FROM disciplines "
-                     "INNER JOIN disciplines_teachers "
-                     "ON disciplines_teachers.discipline_id = disciplines.id "
-                     "INNER JOIN scientific_managements "
-                     "ON scientific_managements.teacher_name = disciplines_teachers.teacher_name "
-                     "GROUP BY disciplines.name";
+      char query[] = "SELECT flats.number, tenants.name "
+                     "FROM flats "
+                     "INNER JOIN tenants "
+                     "ON tenants.flat_number = flats.number "
+                     "AND tenants.address = flats.address "
+                     "WHERE tenants.age > 50 "
+                     "AND sex='м' AND flats.rent_sum < 3000 ";
       cursor_query(query, t -> c_records);
       cursor *query_cursor = t -> c_records;
       for(;query_cursor -> field0[0] != '\0'; query_cursor++)
-        cout << query_cursor -> field0 << endl;
+        cout << query_cursor -> field0 << " "
+             << query_cursor -> field1 << endl;
       getchar();      
     }
     
     static void ThirdSpecialQuery(){
       BaseTable *t = new BaseTable();
-      char query[] = "SELECT publications.name "
-                     "FROM publications "
-                     "INNER JOIN authorships "
-                     "ON authorships.publication_name = publications.name "
-                     "INNER JOIN conferences_teachers "
-                     "ON conferences_teachers.teacher_name = authorships.teacher_name "
-                     "INNER JOIN conferences "
-                     "ON conferences_teachers.conference_theme = conferences.theme "
-                     "OR conferences_teachers.conference_date = conferences.date "
-                     "WHERE conferences.date > '2006-1-1' "
-                     "AND conferences.date < '2007-1-1' "
-                     "AND publications.date < '2002-1-1' "
-                     "GROUP BY publications.name";
+      char query[] = "SELECT tenants.name "
+                     "FROM tenants "
+                     "INNER JOIN flats "
+                     "ON tenants.flat_number = flats.number "
+                     "AND tenants.address = flats.address "
+                     "WHERE flats.entrance_number % 2 = 1 "
+                     "AND flats.number % 2 = 0 "
+                     "AND tenants.sex = 'ж' "
+                     "GROUP BY tenants.name";
       cursor_query(query, t -> c_records);
       cursor *query_cursor = t -> c_records;
       for(;query_cursor -> field0[0] != '\0'; query_cursor++)

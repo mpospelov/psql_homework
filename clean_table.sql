@@ -1,134 +1,58 @@
-CREATE TABLE achivements (
+CREATE TABLE benefits (
     name character varying(255) NOT NULL,
-    description character varying(1024) NOT NULL,
-    topicality boolean NOT NULL
+    sum double precision NOT NULL
 );
 
-
-
-CREATE TABLE achivements_teachers (
-    achivement_name character varying(255) NOT NULL,
-    teacher_name character varying(255) NOT NULL,
-    date date NOT NULL
+CREATE TABLE benefits_tenants (
+    tenant_name character varying(255) NOT NULL,
+    benefit_name character varying(255) NOT NULL
 );
 
-CREATE TABLE authorships (
-    publication_name character varying(255) NOT NULL,
-    teacher_name character varying(255) NOT NULL
+CREATE TABLE flats (
+    number integer NOT NULL,
+    address character varying(255) NOT NULL,
+    square double precision NOT NULL,
+    entrance_number integer NOT NULL,
+    rent_sum double precision NOT NULL
 );
 
-CREATE TABLE conferences (
-    date date NOT NULL,
-    theme character varying(255) NOT NULL,
-    place character varying(255) NOT NULL,
-    type character varying(255) NOT NULL
+CREATE TABLE houses (
+    address character varying(255) NOT NULL,
+    number character varying(255) NOT NULL
 );
 
-CREATE TABLE conferences_teachers (
-    conference_date date NOT NULL,
-    teacher_name character varying(255) NOT NULL,
-    conference_theme character varying(255) NOT NULL
-);
-
-CREATE TABLE disciplines (
+CREATE TABLE tenants (
     name character varying(255) NOT NULL,
-    hours integer NOT NULL,
-    id integer NOT NULL
+    address character varying(255) NOT NULL,
+    flat_number integer NOT NULL,
+    sex character(2044) NOT NULL,
+    age integer NOT NULL
 );
 
-CREATE TABLE disciplines_teachers (
-    teacher_name character varying(255) NOT NULL,
-    discipline_id integer NOT NULL
-);
+ALTER TABLE ONLY benefits
+    ADD CONSTRAINT benefits_pkey PRIMARY KEY (name);
 
-CREATE TABLE publications (
-    name character varying(255) NOT NULL,
-    house character varying(255) NOT NULL,
-    circulation character varying(255) NOT NULL,
-    date date NOT NULL,
-    page_count integer NOT NULL
-);
+ALTER TABLE ONLY benefits_tenants
+    ADD CONSTRAINT benefits_tenants_pkey PRIMARY KEY (benefit_name, tenant_name);
 
-CREATE TABLE scientific_managements (
-    student_name character varying(255) NOT NULL,
-    teacher_name character varying(255) NOT NULL,
-    theme character varying(255) NOT NULL,
-    type character varying(2044) NOT NULL
-);
+ALTER TABLE ONLY flats
+    ADD CONSTRAINT flats_pkey PRIMARY KEY (number, address);
 
-CREATE TABLE teachers (
-    name character varying(255) NOT NULL,
-    title character varying(255) NOT NULL,
-    post character varying(255) NOT NULL
-);
+ALTER TABLE ONLY houses
+    ADD CONSTRAINT houses_pkey PRIMARY KEY (address);
 
+ALTER TABLE ONLY tenants
+    ADD CONSTRAINT tenants_pkey PRIMARY KEY (name);
 
-ALTER TABLE ONLY achivements
-    ADD CONSTRAINT achivements_pkey PRIMARY KEY (name);
+ALTER TABLE ONLY benefits_tenants
+    ADD CONSTRAINT lnk_benefits_tenants_benefits FOREIGN KEY (benefit_name) REFERENCES benefits(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY achivements_teachers
-    ADD CONSTRAINT achivements_teachers_pkey PRIMARY KEY (achivement_name, teacher_name);
+ALTER TABLE ONLY benefits_tenants
+    ADD CONSTRAINT lnk_benefits_tenants_tenants FOREIGN KEY (tenant_name) REFERENCES tenants(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY authorships
-    ADD CONSTRAINT authorship_pkey PRIMARY KEY (publication_name, teacher_name);
+ALTER TABLE ONLY flats
+    ADD CONSTRAINT lnk_flats_houses FOREIGN KEY (address) REFERENCES houses(address) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY conferences_teachers
-    ADD CONSTRAINT confereces_teachers_pkey PRIMARY KEY (conference_date, conference_theme, teacher_name);
-
-ALTER TABLE ONLY conferences
-    ADD CONSTRAINT conferences_pkey PRIMARY KEY (date, theme);
-
-
-ALTER TABLE ONLY disciplines
-    ADD CONSTRAINT disciplines_pkey PRIMARY KEY (id);
-
-
-ALTER TABLE ONLY disciplines_teachers
-    ADD CONSTRAINT disciplines_teachers_pkey PRIMARY KEY (discipline_id, teacher_name);
-
-ALTER TABLE ONLY publications
-    ADD CONSTRAINT publications_pkey PRIMARY KEY (name);
-
-
-ALTER TABLE ONLY scientific_managements
-    ADD CONSTRAINT scientific_managements_pkey PRIMARY KEY (student_name, teacher_name);
-
-ALTER TABLE ONLY teachers
-    ADD CONSTRAINT teachers_pkey PRIMARY KEY (name);
-
-ALTER TABLE ONLY disciplines_teachers
-    ADD CONSTRAINT unique_discipline_id UNIQUE (discipline_id);
-
-ALTER TABLE ONLY publications
-    ADD CONSTRAINT unique_name UNIQUE (name);
-
-ALTER TABLE ONLY disciplines_teachers
-    ADD CONSTRAINT unique_teacher_name UNIQUE (teacher_name);
-
-ALTER TABLE ONLY achivements_teachers
-    ADD CONSTRAINT lnk_achivements_teachers_achivements FOREIGN KEY (achivement_name) REFERENCES achivements(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY achivements_teachers
-    ADD CONSTRAINT lnk_achivements_teachers_teachers FOREIGN KEY (teacher_name) REFERENCES teachers(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY authorships
-    ADD CONSTRAINT lnk_authorship_teachers FOREIGN KEY (teacher_name) REFERENCES teachers(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY authorships
-    ADD CONSTRAINT lnk_authorships_publications FOREIGN KEY (publication_name) REFERENCES publications(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY conferences_teachers
-    ADD CONSTRAINT lnk_confereces_teachers_conferences FOREIGN KEY (conference_date, conference_theme) REFERENCES conferences(date, theme) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY conferences_teachers
-    ADD CONSTRAINT lnk_confereces_teachers_teachers FOREIGN KEY (teacher_name) REFERENCES teachers(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY disciplines_teachers
-    ADD CONSTRAINT lnk_disciplines_teachers_disciplines2 FOREIGN KEY (discipline_id) REFERENCES disciplines(id) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY disciplines_teachers
-    ADD CONSTRAINT lnk_disciplines_teachers_teachers2 FOREIGN KEY (teacher_name) REFERENCES teachers(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY scientific_managements
-    ADD CONSTRAINT lnk_scientific_managements_teachers FOREIGN KEY (teacher_name) REFERENCES teachers(name) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY tenants
+    ADD CONSTRAINT lnk_tenants_flats FOREIGN KEY (flat_number, address) REFERENCES flats(number, address) MATCH FULL ON UPDATE CASCADE ON DELETE CASCADE;
 
