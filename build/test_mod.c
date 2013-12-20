@@ -26,7 +26,7 @@
 /* exec sql end declare section */
 #line 9 "main.pgs"
 
-
+// EXEC SQL WHENEVER SQLERROR SQLPRINT;			
 
 const int string_size = 256;
 const int text_size = 1024;
