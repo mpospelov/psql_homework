@@ -40,14 +40,13 @@ class Achivements : public BaseTable{
       for(;(iterator -> field0)[0] != '\0'; iterator++){
         cout << "\t{ name: '" << iterator -> field0 <<
           "', description: '"<< iterator -> field1 <<
-          "', topicality: '" << iterator -> field2 << 
-          "', date: '" << iterator -> field3 << "' }\n";
+          "', topicality: '" << iterator -> field2 << "' }\n";
       }
       cout << "}\n";
     }
 
     virtual void print_columns(){
-      cout << "\nTable Columns: \nname | description | topicality | date \n\n";
+      cout << "\nTable Columns: \nname | description | topicality \n\n";
     }    
 };
 
