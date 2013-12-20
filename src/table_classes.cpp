@@ -1,5 +1,6 @@
 #include "../headers/table_structs.h"
 #include <iostream>
+using namespace std;
 class BaseTable{
   public:
     BaseTable(){
@@ -7,6 +8,7 @@ class BaseTable{
     }
     cursor *c_records;
     virtual void print(){};
+    virtual void print_columns(){};
 };
 
 class Teachers : public BaseTable{
@@ -14,13 +16,17 @@ class Teachers : public BaseTable{
     Teachers() : BaseTable(){}
     virtual void print(){
       cursor *iterator = (cursor *) c_records;
-      std::cout << "{\n";
+      cout << "{\n";
       for(;(iterator -> field0)[0] != '\0'; iterator++){
-        std::cout << "\t{ name: '" << iterator -> field0 <<
+        cout << "\t{ name: '" << iterator -> field0 <<
           "', title: '"<< iterator -> field1 <<
           "', post: '" << iterator -> field2 << "' }\n";
       }
-      std::cout << "}\n";
+      cout << "}\n";
+    }
+
+    virtual void print_columns(){
+      cout << "\nTable Columns:\n name | title | post \n\n";
     }
 };
 
@@ -38,6 +44,10 @@ class Achivements : public BaseTable{
       }
       std::cout << "}\n";
     }
+
+    virtual void print_columns(){
+      cout << "\nTable Columns: \nname | description | topicality | date \n\n";
+    }    
 };
 
 class TableFactory{

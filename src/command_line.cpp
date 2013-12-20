@@ -18,7 +18,6 @@ class CommandLine{
     static string lastCommand;
 
     static void ShowMenu(){
-      system("clear");
       cout << "Select Action:\n";
       cout << "\t1. show\n";
       cout << "\t2. select values\n";
@@ -34,9 +33,7 @@ class CommandLine{
 
     static void SelectValues(int table_choose){
       char condition[string_size];
-      cout << "<============>\n" 
-           << "Type SELECT condition(\"id > 2\", \"name = 'string'\" etc.)" 
-           << "\n ===> ";
+      cout << "\nType SELECT condition\n" << "===> ";
       getchar();
       cin.getline(condition, string_size);
       ORM::SelectValues(table_choose, &condition[0]);
@@ -45,23 +42,22 @@ class CommandLine{
     static void UpdateValues(int table_choose){
       char *condition = (char *)malloc(sizeof(char) * string_size);
       char *data = (char *)malloc(sizeof(char) * string_size);
-      cout << "<============>\n" 
-           << "Type SELECT condition(\"id>2\", \"name='string'\" etc.)" 
-           << "\n ===> ";
+      BaseTable *table = TableFactory::Create(table_choose);
+      table -> print_columns();
+
+      cout << "\nType SELECT condition\n" << "===> ";
       getchar();
       cin.getline(condition, string_size);
-      cout << "<============>\n" 
-           << "Type UPDATE data(\"id=2\", \"name='string'\" etc.)" 
-           << "\n ===> ";
+      cout << "\nType UPDATE data\n" << "===> ";
       cin.getline(data, string_size);
       ORM::UpdateValues(table_choose, condition, data);
     }
 
     static void InsertValues(int table_choose){
       char *data = (char *)malloc(sizeof(char) * string_size);      
-      cout << "<============>\n" 
-           << "Type INSERT data(2, 'string' etc.)" 
-           << "\n ===> ";
+      cout << "\nType INSERT data\n" << "===> ";
+      BaseTable *table = TableFactory::Create(table_choose);
+      table -> print_columns();
 
       getchar();
       cin.getline(data, string_size);
@@ -71,11 +67,10 @@ class CommandLine{
 
     static void DeleteValues(int table_choose){
       char *condition = (char *)malloc(sizeof(char) * string_size);
+      BaseTable *table = TableFactory::Create(table_choose);
+      table -> print_columns();
 
-      cout << "<============>\n" 
-           << "Type DELETE condition(id>2, name='string' etc...)" 
-           << "\n ===> ";
-      
+      cout << "\nType DELETE condition" << "\n ===> ";
       getchar();
       cin.getline(condition, string_size);
 
@@ -87,7 +82,7 @@ class CommandLine{
       cin >> lastCommand;
 
       int table_choose;
-      cout << "<============>\n" << "Choose table name:\n";
+      cout << "\nChoose table name:\n";
       for(int i = 0; i < TABLES_COUNT; i++ )
         cout <<"\t"<< i << ". " << TABLES[i] << "\n"; 
       cout << "Choose menu item ===> ";
