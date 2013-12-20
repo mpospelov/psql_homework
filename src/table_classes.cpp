@@ -1,6 +1,7 @@
 #include "../headers/table_structs.h"
 #include <iostream>
 using namespace std;
+
 class BaseTable{
   public:
     BaseTable(){
@@ -35,14 +36,14 @@ class Achivements : public BaseTable{
     Achivements() : BaseTable(){}
     virtual void print(){
       cursor *iterator = (cursor *) c_records;
-      std::cout << "{\n";
+      cout << "{\n";
       for(;(iterator -> field0)[0] != '\0'; iterator++){
-        std::cout << "\t{ name: '" << iterator -> field0 <<
+        cout << "\t{ name: '" << iterator -> field0 <<
           "', description: '"<< iterator -> field1 <<
           "', topicality: '" << iterator -> field2 << 
           "', date: '" << iterator -> field3 << "' }\n";
       }
-      std::cout << "}\n";
+      cout << "}\n";
     }
 
     virtual void print_columns(){
@@ -50,13 +51,33 @@ class Achivements : public BaseTable{
     }    
 };
 
+class AchivementsTeachers : public BaseTable{
+  public:
+    AchivementsTeachers() : BaseTable(){}
+    virtual void print(){
+      cursor *iterator = (cursor *) c_records;
+      cout << "{\n";
+      for(;(iterator -> field0)[0] != '\0'; iterator++){
+        cout << "\t{ achivement_name: '" << iterator -> field0 <<
+          "', teacher_name: '"<< iterator -> field1 << "' }\n";
+      }
+      cout << "}\n";
+    }
+
+    virtual void print_columns(){
+      cout << "\nTable Columns: \n achivement_name | teacher_name \n\n";
+    }    
+};
+
+
 class TableFactory{
   public:
     static BaseTable* Create(int table_choose){
       switch(table_choose){
         case 0:
           return new Achivements();
-        // case 1:
+        case 1:
+          return new AchivementsTeachers();
         //   break;
         // case 2:
         //   break;

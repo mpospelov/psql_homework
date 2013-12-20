@@ -42,6 +42,16 @@ void db_disconnect(){
   printf("disconnect --OK\n");
 }
 
+bool handle_errors(){
+  if (sqlca.sqlcode != ECPG_NO_ERROR &&
+      sqlca.sqlcode != ECPG_NOT_FOUND &&
+      sqlca.sqlcode != ECPG_TOO_MANY_ARGUMENTS){
+    printf("%s\n",sqlca.sqlerrm.sqlerrmc);
+    return true;
+  }else{
+    return false;
+  }
+}
 void cursor_query(char *query, cursor *result){
   EXEC SQL BEGIN DECLARE SECTION;
     cursor dbval;
@@ -59,10 +69,10 @@ void cursor_query(char *query, cursor *result){
   while(1)
   {
     EXEC SQL FETCH CursorQuery INTO :dbval;
+    if(handle_errors()) break;
     *result = dbval;
     result ++;
   }
-
   EXEC SQL CLOSE CursorQuery;
   EXEC SQL COMMIT;
   printf("Query Finished!\n");
@@ -75,6 +85,7 @@ void simple_query(char *query){
   sprintf(stmt, "%s", query);
   printf("Executing query: %s\n", stmt);
   EXEC SQL EXECUTE IMMEDIATE :stmt;
+  handle_errors();
   EXEC SQL COMMIT;
   printf("Query Finished!\n");
 }

@@ -33,6 +33,9 @@ class CommandLine{
 
     static void SelectValues(int table_choose){
       char condition[string_size];
+      BaseTable *table = TableFactory::Create(table_choose);
+
+      table -> print_columns();
       cout << "\nType SELECT condition\n" << "===> ";
       getchar();
       cin.getline(condition, string_size);
@@ -55,10 +58,10 @@ class CommandLine{
 
     static void InsertValues(int table_choose){
       char *data = (char *)malloc(sizeof(char) * string_size);      
-      cout << "\nType INSERT data\n" << "===> ";
       BaseTable *table = TableFactory::Create(table_choose);
       table -> print_columns();
 
+      cout << "\nType INSERT data\n" << "===> ";
       getchar();
       cin.getline(data, string_size);
 
