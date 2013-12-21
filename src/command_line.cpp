@@ -147,12 +147,12 @@ class CommandLine{
         cout << "\nChoose table name:\n";
         for(int i = 0; i < TABLES_COUNT; i++ )
           cout <<"\t"<< i << ". " << TABLES[i] << "\n"; 
-        cout <<"\t0. back\n";
+        cout <<"\t10. back\n";
         cout << "Choose menu item ===> ";
         cin >> table_choose;
       }
 
-      if(table_choose != 0){
+      if(table_choose != 10){
         switch(command_int){
           case 1:
             Show(table_choose);
