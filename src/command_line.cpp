@@ -147,35 +147,38 @@ class CommandLine{
         cout << "\nChoose table name:\n";
         for(int i = 0; i < TABLES_COUNT; i++ )
           cout <<"\t"<< i << ". " << TABLES[i] << "\n"; 
+        cout <<"\t0. back\n";
         cout << "Choose menu item ===> ";
         cin >> table_choose;
       }
 
-      switch(command_int){
-        case 1:
-          Show(table_choose);
-          break;
-        case 2:
-          SelectValues(table_choose);
-          break;
-        case 3:
-          UpdateValues(table_choose);
-          break;          
-        case 4:
-          InsertValues(table_choose);
-          break;          
-        case 5:
-          DeleteValues(table_choose);
-          break;          
-        case 6:
-          FirstSpecialQuery();
-          break;
-        case 7:
-          SecondSpecialQuery();
-          break;
-        case 8:
-          ThirdSpecialQuery();
-          break;
+      if(table_choose != 0){
+        switch(command_int){
+          case 1:
+            Show(table_choose);
+            break;
+          case 2:
+            SelectValues(table_choose);
+            break;
+          case 3:
+            UpdateValues(table_choose);
+            break;          
+          case 4:
+            InsertValues(table_choose);
+            break;          
+          case 5:
+            DeleteValues(table_choose);
+            break;          
+          case 6:
+            FirstSpecialQuery();
+            break;
+          case 7:
+            SecondSpecialQuery();
+            break;
+          case 8:
+            ThirdSpecialQuery();
+            break;
+        }
       }
     }
 };
